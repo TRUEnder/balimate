@@ -37,7 +37,8 @@ app.use(flash())
 app.use(session({
     secret: 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    maxAge: null
 }))
 app.use(passport.session())
 app.use(passport.initialize())
@@ -230,7 +231,7 @@ app.post('/user/:userid/review/:placeid', (req, res) => {
         })
 })
 
-app.get('/user/:id/reviews', (req, res) => {
+app.get('/user/:id/reviews', blockForNotAuthenticated, (req, res) => {
     res.render('user_review.ejs')
 })
 
