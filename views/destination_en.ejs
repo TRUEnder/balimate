@@ -148,7 +148,13 @@
     <div class="container-fluid">
         <div class="row justify-content-center align-items-center d-flex" style="font-size: 0.9rem; gap: 8rem;">
             <div class="col-md-4 d-flex flex-column" style="gap: 2.5rem">
-                <h5>Description</h5>
+                <div class="d-flex flex-column" style="gap: 0.7rem">
+                    <h5>Description</h5>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-map-marker-alt text-warning mr-3"></i>
+                        <div id="city" style="font-weight: 500;"></div>
+                    </div>
+                </div>
                 <p id="description"></p>
                 <a href="../review/<%= placeid %>" id="review-link">
                     <button type="button" id="review-btn" class="btn btn-dark rounded text-white"
@@ -247,6 +253,9 @@
                 if (resp.code === 'success') {
                     var placeName = document.getElementById('place-name');
                     placeName.textContent = resp.data.place_name;
+
+                    var city = document.getElementById('city');
+                    city.textContent = resp.data.city;
 
                     var description = document.getElementById('description');
                     description.textContent = resp.data.description;
@@ -395,7 +404,7 @@
     </script>
 
 
-    <!-- Get has Review -->
+    <!-- Get has Reviewed -->
     <script>
         const reviewLink = document.getElementById('review-link');
         const reviewButton = document.getElementById('review-btn');
@@ -407,7 +416,7 @@
             .then(function (resp) {
                 if (resp.code === 'success') {
 
-                    if (resp.data.hasLiked === 1) {
+                    if (resp.data.hasReviewed === 1) {
                         reviewLink.classList.add('disabled-link')
                         reviewButton.classList.add('disabled')
                     }

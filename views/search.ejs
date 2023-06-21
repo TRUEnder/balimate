@@ -161,6 +161,8 @@
 
           if (resp.data.length !== 0) {
             for (const key in resp.data) {
+              if (Number(key) === 9)
+                break;
 
               const thumbnail = resp.data[key].thumbnail_url;
               const placeid = resp.data[key].place_id;
