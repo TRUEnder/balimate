@@ -25,6 +25,35 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="../style/style.css" rel="stylesheet">
+
+    <style>
+        #loading {
+            width: 3rem;
+            height: 3rem;
+            border: 5px solid #f3f3f3;
+            border-top: 6px solid #f2b441;
+            border-radius: 100%;
+            margin: auto;
+            visibility: hidden;
+            animation: spin 1s infinite linear;
+        }
+
+        #loading.display {
+            visibility: visible;
+            margin-top: 5rem;
+            margin-bottom: 9rem;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -173,14 +202,15 @@
         <div class="container pb-5">
             <div class="bg-light shadow" style="padding: 30px;">
                 <form action="/user/<%= userid %>/search" method="POST">
-                    <div class="row align-items-center" style="min-height: 60px;">
-                        <div class="col-md-10">
+                    <div class="row d-flex justify-content-center align-items-center" style="min-height: 60px;">
+                        <div class="col-md-8">
                             <div class="row mx-3" style="height: 3rem">
-                                <input class="w-100 border px-3 text-muted" type="text" name="query" autocomplete="off">
+                                <input class="w-100 px-3 shadow rounded text-muted" type="text" name="query"
+                                    autocomplete="off" style="border: 1px solid #999999;">
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-warning btn-block" type="submit"
+                            <button class="btn btn-warning btn-block shadow" type="submit"
                                 style="height: 47px; margin-top: -2px;">Search</button>
                         </div>
                     </div>
@@ -205,13 +235,14 @@
 
 
     <!-- Recommendations Start -->
-    <div class="container-fluid" id="recommendations" style="margin-top: 8rem">
+    <div class="container-fluid" id="recommendations" style="margin-top: 3rem">
         <div class="row d-flex justify-content-center">
             <div class="d-flex flex-column col-md-10" style="gap: 3.5rem">
                 <h4 class="w-100">Recommendations for You</h4>
                 <div id="recommendations-container" class="row d-flex justify-content-center"></div>
             </div>
         </div>
+        <div id="loading"></div>
     </div>
     <!-- Recommendations End -->
 
@@ -532,9 +563,26 @@
     </script>
 
 
+    <!-- Loader -->
+    <script>
+        // selecting loading div
+        const loader = document.querySelector("#loading");
+
+        function displayLoading() {
+            loader.classList.add("display");
+        }
+
+        function hideLoading() {
+            loader.classList.remove("display");
+        }
+    </script>
+
+
     <!-- Recommendations -->
     <script>
         const recommendations = document.getElementById('recommendations-container')
+
+        displayLoading()
 
         fetch(`https://ml-dot-balimate.et.r.appspot.com/recommend?userid=${userid}`)
             .then(function (response) {
@@ -608,6 +656,9 @@
                         placeContainer.innerHTML = template
                         recommendations.append(placeContainer)
                     }
+
+                    hideLoading()
+
                 } else {
                     console.log(resp)
                 }

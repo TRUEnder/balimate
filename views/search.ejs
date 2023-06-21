@@ -52,6 +52,33 @@
         color: #1f1f1f;
         text-decoration: none;
       }
+
+      #loading {
+        width: 3rem;
+        height: 3rem;
+        border: 5px solid #f3f3f3;
+        border-top: 6px solid #f2b441;
+        border-radius: 100%;
+        margin: auto;
+        visibility: hidden;
+        animation: spin 1s infinite linear;
+      }
+
+      #loading.display {
+        visibility: visible;
+        margin-top: 5rem;
+        margin-bottom: 9rem;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
   <title>Search</title>
@@ -78,16 +105,33 @@
           </form>
         </div>
       </div>
-      <h5>Results for <%= query %>
+      <h5>
+        Results for "<%= query %>"
       </h5>
-      <div class="row d-flex justify-content-center my-5" id="search-results">
-      </div>
+      <div id="loading"></div>
+      <div class="row d-flex justify-content-center my-5" id="search-results"></div>
     </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
     </script>
+
+
+
+  <!-- Loader -->
+  <script>
+    // selecting loading div
+    const loader = document.querySelector("#loading");
+
+    function displayLoading() {
+      loader.classList.add("display");
+    }
+
+    function hideLoading() {
+      loader.classList.remove("display");
+    }
+  </script>
 
 
   <!-- Fetch hasil search -->
@@ -105,6 +149,8 @@
     const search = document.getElementById('search-results')
 
     searchBar.value = query
+
+    displayLoading()
 
     fetch(`https://ml-dot-balimate.et.r.appspot.com/search?q=${query}`)
       .then(function (response) {
@@ -178,6 +224,8 @@
               placeContainer.innerHTML = template
               search.append(placeContainer)
             }
+
+            hideLoading()
 
           } else {
             search.innerText = 'Not found what did you mean'

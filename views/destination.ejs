@@ -24,6 +24,35 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="../../../style/style.css" rel="stylesheet">
+
+    <style>
+        #loading {
+            width: 3rem;
+            height: 3rem;
+            border: 5px solid #f3f3f3;
+            border-top: 6px solid #f2b441;
+            border-radius: 100%;
+            margin: auto;
+            visibility: hidden;
+            animation: spin 1s infinite linear;
+        }
+
+        #loading.display {
+            visibility: visible;
+            margin-top: 5rem;
+            margin-bottom: 9rem;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -119,7 +148,13 @@
     <div class="container-fluid">
         <div class="row justify-content-center align-items-center d-flex" style="font-size: 0.9rem; gap: 8rem;">
             <div class="col-md-4 d-flex flex-column" style="gap: 2.5rem">
-                <h5>Description</h5>
+                <div class="d-flex flex-column" style="gap: 0.7rem">
+                    <h5>Description</h5>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-map-marker-alt text-warning mr-3"></i>
+                        <div id="city" style="font-weight: 500;"></div>
+                    </div>
+                </div>
                 <p id="description"></p>
                 <div class="d-flex flex-column" style="gap: 1.3rem">
                     <a href="../destination/<%= placeid %>?lang=en" id="switch-link">
@@ -158,12 +193,13 @@
 
     <!-- More Like This Start -->
     <div class="container" style="margin-top: 9rem">
-        <div class="row d-flex justify-content-center" style="gap: 3.5rem">
-            <div class="col-md-11">
+        <div class="d-flex flex-column align-item-center" style="gap: 3rem">
+            <div class="ml-5">
                 <h4>More like this</h4>
             </div>
             <div id="more-like" class="row d-flex flex-wrap justify-content-center"></div>
         </div>
+        <div id="loading"></div>
     </div>
     <!-- More Like This End -->
 
@@ -237,6 +273,9 @@
                 if (resp.code === 'success') {
                     var placeName = document.getElementById('place-name');
                     placeName.textContent = resp.data.place_name;
+
+                    var city = document.getElementById('city');
+                    city.textContent = resp.data.city;
 
                     var description = document.getElementById('description');
                     description.textContent = resp.data.description;
@@ -459,11 +498,28 @@
     </script> -->
 
 
+    <!-- Loader -->
+    <script>
+        // selecting loading div
+        const loader = document.querySelector("#loading");
+
+        function displayLoading() {
+            loader.classList.add("display");
+        }
+
+        function hideLoading() {
+            loader.classList.remove("display");
+        }
+    </script>
+
+
     <!-- More Like -->
     <script>
         const morelike = document.getElementById('more-like')
 
-        fetch(`https://ml-dot-balimate.et.r.appspot.com/recommend?userid=${userid}`)
+        displayLoading()
+
+        fetch(`https://ml-dot-balimate.et.r.appspot.com/recommendDest?placeid=${placeid}`)
             .then(function (response) {
                 return response.json()
             })
@@ -492,7 +548,7 @@
                         const placeContainer = document.createElement('div')
                         placeContainer.className = 'col-4 d-flex justify-content-center'
                         const template = `
-                        <div class="card" style="width: 24rem; cursor: auto">
+                        <div class="card" style="width: 30rem; cursor: auto">
                             <div class="d-flex justify-content-center overflow-hidden">
                                 <img src="${thumbnail}" class="card-img-top" alt="${placeName}" style="height: 14.5rem; width: auto">
                             </div>
@@ -535,6 +591,9 @@
                         placeContainer.innerHTML = template
                         morelike.append(placeContainer)
                     }
+
+                    hideLoading()
+
                 } else {
                     console.log(resp)
                 }
